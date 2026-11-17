@@ -55,59 +55,63 @@ This project strengthened my understanding of the transition from IaaS to PaaS, 
 
 ## Implementation evidence
 
-The following screenshots document the Azure resources, security configurations, and validation steps completed during this project. Screenshots are presented as supporting evidence; a configuration or review screen does not, by itself, establish successful end-to-end application integration.
+This portfolio separates **resource configuration**, **authorization**, and **successful API validation**. Each caption describes the screen actually captured, rather than attributing unrelated evidence to a service.
 
-### 1. Azure SQL Database Deployment
+### Azure infrastructure and database modernization
 
-I transitioned the database tier from a self-managed Ubuntu VM to **Azure SQL Database**, reducing the need to administer a database virtual machine. The deployed database `sql-app` was reported online on the Basic service tier (5 DTUs), with the logical server `sql-server-markk`.
+The original environment included a self-managed database-tier VM and managed disk. Those resources were subsequently retired as the database tier moved to Azure SQL Database. The earlier captures below show the **former IaaS resources**, not the Azure SQL service.
 
-![Azure SQL Database overview](screenshots/01-sql-database-overview.png)
+![Former database-tier virtual machine](screenshots/01-sql-database-overview.png)
 
-*Azure SQL Database overview — database provisioning and service status.*
+*Historical infrastructure: former database-tier virtual machine. This is **not** an Azure SQL Database overview.*
 
-![Azure SQL logical server](screenshots/02-sql-logical-server.png)
+![Former database-tier managed disk](screenshots/02-sql-logical-server.png)
 
-*SQL logical server — managed database server resource.*
+*Historical infrastructure: managed disk associated with the former database VM. This is **not** an Azure SQL logical server screenshot.*
 
-### 2. Azure Key Vault & Secret Management
+The Azure SQL logical server `sql-server-markk` and its database `sql-app` (Online, Basic tier) are documented in the project inventory. A separate, correctly identified SQL logical server capture is being prepared for upload.
 
-I provisioned **Azure Key Vault** (`kv-lab03-mark`) to store the SQL administrator credential as a secret instead of placing it in scripts or GitHub. The `SqlAdminPassword` secret was enabled; its value is intentionally not displayed.
+![Azure SQL Database compute and storage configuration](screenshots/05-vm-managed-identity.png)
+
+*Azure SQL Database compute/storage configuration; this capture does **not** show VM managed identity.*
+
+### Azure Key Vault and secret management
+
+The project uses `kv-lab03-mark` to hold the enabled `SqlAdminPassword` secret. The secret's value is intentionally excluded.
 
 ![Azure Key Vault overview](screenshots/03-key-vault-overview.png)
 
-*Key Vault overview — centralized secret-management resource.*
+*Key Vault resource overview.*
 
-![Azure Key Vault secret list](screenshots/04-key-vault-secret-list.png)
+![Azure Key Vault secret inventory](screenshots/04-key-vault-secret-list.png)
 
-*Secret inventory — enabled secret name without exposing the secret value.*
+*Secret list showing configuration, not the credential value.*
 
-### 3. Managed Identity & RBAC
+### Managed identity and role-based access control
 
-I enabled a **system-assigned managed identity** on the retained Ubuntu web VM (`vm-web`) and configured vault-scoped **Key Vault Secrets User** access. This separates workload authentication from credential storage and demonstrates Azure role-based access control.
+The retained `vm-web` Ubuntu VM was configured with a system-assigned managed identity, and vault-scoped `Key Vault Secrets User` authorization was configured for that identity. A separate identity-status screenshot is being prepared for upload; the SQL compute screenshot above must not be used as identity evidence.
 
-![Azure web VM managed identity](screenshots/05-vm-managed-identity.png)
+![Azure Key Vault RBAC configuration](screenshots/06-key-vault-rbac.png)
 
-*Web VM identity settings — system-assigned managed identity configuration.*
+*Key Vault RBAC screen. A role-selection or review screen alone does not establish that an assignment was completed; the successful authenticated request below provides additional functional evidence of access.*
 
-![Azure Key Vault RBAC](screenshots/06-key-vault-rbac.png)
+### API verification and resource inventory
 
-*Key Vault authorization — RBAC configuration evidence. Consult the implementation and verification notes for the confirmed access outcome.*
+The Key Vault REST request using a token acquired through managed identity returned **HTTP 200**. The response body was suppressed to avoid publishing the secret.
 
-### 4. Validation & Infrastructure Cleanup
+![Key Vault REST API HTTP 200](screenshots/07-secret-retrieval-http-200.png)
 
-To validate secret access, I acquired a token through the VM's managed identity and called the **Key Vault REST API**. The request returned **HTTP 200**, with the secret response body suppressed to avoid exposing the credential. I also removed the former database-tier VM and its DB-specific supporting resources while retaining the web tier.
+*Successful API status response; this verifies access to the requested Key Vault endpoint, not a SQL application connection.*
 
-![Key Vault REST API HTTP 200 validation](screenshots/07-secret-retrieval-http-200.png)
+![Azure resource group inventory](screenshots/08-db-tier-cleanup.png)
 
-*Validation — successful authenticated API response. The secret value is not shown.*
+*Azure resource inventory captured during infrastructure review. The image is not, by itself, a before-and-after proof of DB-tier deletion.*
 
-![Azure resource inventory after database tier cleanup](screenshots/08-db-tier-cleanup.png)
+**Verification boundary:** This project documents Azure SQL provisioning and managed-identity-based Key Vault access. It does not claim an application-to-SQL connection, executed SQL queries, or a deployed application backend.
 
-*Infrastructure cleanup — resource inventory following removal of DB-tier resources.*
+**Evidence maintenance:** Two additional original captures—`sql-server-markk` overview and `vm-web` identity status—are available for upload under descriptive filenames. The older historical filenames are retained temporarily to avoid broken links; the captions above explicitly identify their actual contents.
 
-**Scope of verification:** Azure SQL Database provisioning and managed-identity-based Key Vault secret retrieval were demonstrated. An application-to-Azure-SQL connection, SQL queries, and a deployed application backend were **not** verified in this project.
-
-For configuration details and supporting notes, see [implementation](docs/implementation.md), [security and lessons learned](docs/security-and-lessons.md), and the [evidence guide](docs/evidence-guide.md).
+For technical context, see [implementation](docs/implementation.md), [security and lessons](docs/security-and-lessons.md), and the [evidence guide](docs/evidence-guide.md).
 
 ## Skills demonstrated
 
