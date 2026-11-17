@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+<title id="title">Azure PaaS Modernization — SQL Database, Key Vault and Managed Identity</title>
+<desc id="desc">Dark navy Azure architecture diagram showing an existing Ubuntu web virtual machine using system-assigned managed identity to obtain a Microsoft Entra access token, receive Key Vault Secrets User permission through Azure RBAC, and successfully retrieve the SqlAdminPassword secret from Azure Key Vault. Azure SQL Database is deployed as a managed PaaS database. No application-to-SQL connection is represented.</desc>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#081a32"/><stop offset="1" stop-color="#122c49"/></linearGradient>
+<marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#38bdf8"/></marker>
+<filter id="shadow"><feDropShadow dx="0" dy="6" stdDeviation="9" flood-opacity=".25"/></filter>
+</defs>
+<rect width="1440" height="900" fill="url(#bg)"/>
+<text x="70" y="72" font-family="Arial,sans-serif" font-size="34" font-weight="700" fill="#f8fafc">AZURE PAAS MODERNIZATION</text>
+<text x="70" y="111" font-family="Arial,sans-serif" font-size="23" fill="#7dd3fc">Managed Identity • Azure Key Vault • Azure SQL Database</text>
+<text x="70" y="146" font-family="Arial,sans-serif" font-size="16" fill="#a9bdd2">Deployed architecture  |  Central US  |  Secret access verified with HTTP 200</text>
+<rect x="58" y="189" width="1324" height="590" rx="23" fill="#0c2441" stroke="#4ea8f4" stroke-width="3"/>
+<rect x="85" y="172" width="290" height="36" rx="10" fill="#1478b8"/>
+<text x="105" y="197" font-family="Arial,sans-serif" font-size="18" fill="#fff" font-weight="700">Microsoft Azure</text>
+<!-- Left: original IaaS environment -->
+<rect x="93" y="242" width="482" height="475" rx="17" fill="#102b4a" stroke="#72b7eb" stroke-width="2.5" stroke-dasharray="12 8"/>
+<rect x="116" y="225" width="273" height="34" rx="8" fill="#21527c"/>
+<text x="132" y="248" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#e8f6ff">Existing Web Infrastructure</text>
+<rect x="128" y="292" width="413" height="357" rx="16" fill="#173a5e" stroke="#4e91c9" stroke-width="2" filter="url(#shadow)"/>
+<text x="157" y="326" font-family="Arial,sans-serif" font-size="19" fill="#9fe1ff" font-weight="700">vnet-lab02 / snet-web</text>
+<rect x="159" y="355" width="349" height="155" rx="13" fill="#173e63" stroke="#47b5f5" stroke-width="2.5"/>
+<!-- VM icon -->
+<rect x="181" y="384" width="76" height="63" rx="9" fill="#147db6"/>
+<rect x="192" y="394" width="54" height="37" rx="3" fill="#cceeff"/>
+<path d="M205 439h28 M219 431v8" stroke="#d6f2ff" stroke-width="3"/>
+<text x="278" y="397" font-family="Arial,sans-serif" font-size="23" fill="#fff" font-weight="700">vm-web</text>
+<text x="278" y="427" font-family="Arial,sans-serif" font-size="17" fill="#c4d9e9">Ubuntu virtual machine</text>
+<text x="278" y="453" font-family="Arial,sans-serif" font-size="15" fill="#a7e7ff">System-assigned identity: On</text>
+<rect x="160" y="536" width="347" height="84" rx="10" fill="#0b2b48" stroke="#8ed9f7" stroke-dasharray="7 5"/>
+<text x="182" y="567" font-family="Arial,sans-serif" font-size="18" fill="#e9f5ff" font-weight="700">No stored Azure credentials</text>
+<text x="182" y="595" font-family="Arial,sans-serif" font-size="15" fill="#a7c4da">VM identity used for secret access</text>
+<!-- Right: PaaS services -->
+<rect x="627" y="242" width="711" height="475" rx="17" fill="#102b4a" stroke="#72b7eb" stroke-width="2.5" stroke-dasharray="12 8"/>
+<rect x="652" y="225" width="290" height="34" rx="8" fill="#21527c"/>
+<text x="669" y="248" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#e8f6ff">Managed Azure Services</text>
+<!-- Entra card -->
+<rect x="662" y="286" width="295" height="153" rx="15" fill="#173e63" stroke="#47b5f5" stroke-width="2.5" filter="url(#shadow)"/>
+<circle cx="710" cy="337" r="23" fill="#147db6"/>
+<path d="M699 337l10 10 17-23" fill="none" stroke="#e0f2fe" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="748" y="327" font-family="Arial,sans-serif" font-size="20" font-weight="700" fill="#fff">Microsoft Entra ID</text>
+<text x="748" y="354" font-family="Arial,sans-serif" font-size="16" fill="#c4d9e9">Managed identity token</text>
+<text x="686" y="403" font-family="Arial,sans-serif" font-size="15" fill="#a7e7ff">Token-based authentication</text>
+<!-- Vault card -->
+<rect x="993" y="286" width="306" height="244" rx="15" fill="#173e63" stroke="#47b5f5" stroke-width="2.5" filter="url(#shadow)"/>
+<rect x="1016" y="312" width="67" height="68" rx="12" fill="#147db6"/>
+<path d="M1033 339v-9a17 17 0 0 1 34 0v9 M1032 339h36v28h-36z" fill="none" stroke="#d6f2ff" stroke-width="4"/>
+<text x="1095" y="329" font-family="Arial,sans-serif" font-size="22" font-weight="700" fill="#fff">Azure Key Vault</text>
+<text x="1095" y="356" font-family="Arial,sans-serif" font-size="17" fill="#9fe1ff">kv-lab03-mark</text>
+<rect x="1016" y="405" width="263" height="87" rx="10" fill="#0b2b48" stroke="#8ed9f7" stroke-width="1.8" stroke-dasharray="6 5"/>
+<text x="1033" y="434" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#e9f5ff">Secret: SqlAdminPassword</text>
+<text x="1033" y="458" font-family="Arial,sans-serif" font-size="15" fill="#a7e7ff">Key Vault Secrets User</text>
+<text x="1033" y="479" font-family="Arial,sans-serif" font-size="14" fill="#b7d0e6">Azure RBAC scope: vault</text>
+<!-- SQL card -->
+<rect x="662" y="558" width="637" height="119" rx="15" fill="#173e63" stroke="#47b5f5" stroke-width="2.5" filter="url(#shadow)"/>
+<ellipse cx="713" cy="589" rx="27" ry="11" fill="#147db6" stroke="#b7eaff" stroke-width="2"/>
+<path d="M686 589v40q27 22 54 0v-40" fill="#147db6" stroke="#b7eaff" stroke-width="2"/>
+<ellipse cx="713" cy="629" rx="27" ry="11" fill="#147db6" stroke="#b7eaff" stroke-width="2"/>
+<text x="765" y="594" font-family="Arial,sans-serif" font-size="23" fill="#fff" font-weight="700">Azure SQL Database</text>
+<text x="765" y="623" font-family="Arial,sans-serif" font-size="17" fill="#9fe1ff">sql-app  •  Basic tier  •  PaaS</text>
+<text x="765" y="649" font-family="Arial,sans-serif" font-size="15" fill="#c4d9e9">Managed database service provisioned</text>
+<!-- connectors carefully routed through gap -->
+<path d="M508 379 H662" fill="none" stroke="#38bdf8" stroke-width="3.5" marker-end="url(#arrow)"/>
+<text x="585" y="363" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" fill="#a7e7ff">Token</text>
+<path d="M957 366 H993" fill="none" stroke="#38bdf8" stroke-width="3.5" marker-end="url(#arrow)"/>
+<text x="975" y="350" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#a7e7ff">RBAC</text>
+<path d="M993 509 H590 V473 H508" fill="none" stroke="#38bdf8" stroke-width="3" stroke-dasharray="9 6" marker-end="url(#arrow)"/>
+<text x="770" y="494" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#e0f2fe">Secret retrieval response • HTTP 200</text>
+<text x="70" y="821" font-family="Arial,sans-serif" font-size="19" font-weight="700" fill="#e5f4ff">Verified workflow</text>
+<text x="243" y="821" font-family="Arial,sans-serif" font-size="17" fill="#b6d1e3">VM managed identity → Entra token → Key Vault RBAC → secret retrieval</text>
+<text x="70" y="858" font-family="Arial,sans-serif" font-size="14" fill="#89a7bf">Architecture diagram • PaaS modernization and identity-based secret access • No application-to-database path shown</text>
+</svg>

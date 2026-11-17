@@ -1,0 +1,16 @@
+# Credentials and local settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+*token*
+*password*.txt
+*.tfstate
+*.tfstate.*
+.terraform/
+.vscode/
+.DS_Store
+__pycache__/
