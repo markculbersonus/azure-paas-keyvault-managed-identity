@@ -53,24 +53,6 @@ Migrating from a self-managed database-tier VM to Azure SQL Database required ca
 
 This lab strengthened my understanding of the transition from IaaS to PaaS, how managed identities eliminate the need to store service credentials for Key Vault authentication, and how Azure RBAC controls access to sensitive application secrets. I also practiced validating access through an authenticated REST API request and documenting the outcome without disclosing secrets.
 
-## Repository structure
-
-```text
-architecture/
-  azure-paas-architecture.svg
-
-docs/
-  implementation.md
-  evidence-guide.md
-  security-and-lessons.md
-
-screenshots/
-  README.md
-
-README.md
-.gitignore
-```
-
 ## Evidence
 
 Screenshots should show Azure SQL Database online, the Key Vault and enabled secret name, the web VM's system-assigned identity, the vault-scoped RBAC assignment, and the terminal's successful HTTP 200 response. See [`docs/evidence-guide.md`](docs/evidence-guide.md) for a publication-safe checklist.
