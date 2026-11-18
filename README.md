@@ -63,11 +63,11 @@ This project explores an **IaaS-to-PaaS database modernization approach**: docum
 
 #### Former database-tier infrastructure
 
-![Former database-tier Ubuntu VM](Screenshots%20Terraform/01-former-database-vm.png)
+![Former database-tier Ubuntu VM](screenshots%20Terraform/01-former-database-vm.png)
 
 *Historical Azure VM `vm-db-01` in a stopped (deallocated) state, with 4 vCPUs, 16 GiB RAM, and private IP `10.0.2.4`. This is an IaaS VM, not Azure SQL Database.*
 
-![Former database VM managed disk](Screenshots%20Terraform/02-former-database-disk.png)
+![Former database VM managed disk](screenshots%20Terraform/02-former-database-disk.png)
 
 *Historical 30 GiB Premium SSD LRS managed OS disk associated with `vm-db-01`.*
 
@@ -75,15 +75,15 @@ This project explores an **IaaS-to-PaaS database modernization approach**: docum
 
 I provisioned Azure SQL logical server `sql-server-markk` in **Central US**, with the managed database `sql-app`.
 
-![Azure SQL logical server overview](Screenshots%20Terraform/03-azure-sql-logical-server.png)
+![Azure SQL logical server overview](screenshots%20Terraform/03-azure-sql-logical-server.png)
 
 *SQL logical server `sql-server-markk` showing Available status and the associated `sql-app` database.*
 
-![Azure SQL Database overview](Screenshots%20Terraform/04-azure-sql-database.png)
+![Azure SQL Database overview](screenshots%20Terraform/04-azure-sql-database.png)
 
 *Azure SQL Database `sql-app` showing Online status and the Basic pricing tier.*
 
-![Azure SQL compute and storage configuration](Screenshots%20Terraform/05-azure-sql-compute-storage.png)
+![Azure SQL compute and storage configuration](screenshots%20Terraform/05-azure-sql-compute-storage.png)
 
 *Azure SQL Basic service tier configured for 5 DTUs, a 2 GB maximum database size, and locally redundant backup storage.*
 
@@ -93,11 +93,11 @@ I provisioned Azure SQL logical server `sql-server-markk` in **Central US**, wit
 
 To avoid embedding a SQL administrator credential in source code, I deployed Azure Key Vault `kv-lab03-mark` in **Central US** and created an enabled secret named `SqlAdminPassword`.
 
-![Azure Key Vault resource overview](Screenshots%20Terraform/06-key-vault-overview.png)
+![Azure Key Vault resource overview](screenshots%20Terraform/06-key-vault-overview.png)
 
 *Key Vault `kv-lab03-mark` overview, including the vault endpoint and enabled soft delete. Purge protection was disabled in the captured configuration.*
 
-![Azure Key Vault secrets inventory](Screenshots%20Terraform/07-key-vault-secret-list.png)
+![Azure Key Vault secrets inventory](screenshots%20Terraform/07-key-vault-secret-list.png)
 
 *Secret inventory showing `SqlAdminPassword` successfully created and enabled; the secret value is not displayed.*
 
@@ -107,13 +107,13 @@ To avoid embedding a SQL administrator credential in source code, I deployed Azu
 
 I enabled a **system-assigned managed identity** for the existing Ubuntu VM `vm-web`. This allows the VM to request Microsoft Entra tokens without storing a client secret for its own Azure identity.
 
-![VM system-assigned managed identity](Screenshots%20Terraform/08-vm-managed-identity.png)
+![VM system-assigned managed identity](screenshots%20Terraform/08-vm-managed-identity.png)
 
 *Azure VM `vm-web` Identity page showing system-assigned identity Status: On and a provisioned principal ID.*
 
 I then assigned the **Key Vault Secrets User** role to the `vm-web` managed identity at the scope of `kv-lab03-mark`.
 
-![Completed Key Vault RBAC role assignment](Screenshots%20Terraform/09-key-vault-rbac-assignment.png)
+![Completed Key Vault RBAC role assignment](screenshots%20Terraform/09-key-vault-rbac-assignment.png)
 
 *Key Vault Access control (IAM) → Role assignments showing `vm-web` as a managed identity with the `Key Vault Secrets User` role at This resource scope. This is a completed assignment listing, not merely the assignment wizard.*
 
@@ -125,13 +125,13 @@ I then assigned the **Key Vault Secrets User** role to the `vm-web` managed iden
 
 From `vm-web`, I tested an authenticated REST request to the `SqlAdminPassword` secret endpoint using a bearer token obtained through managed identity. The cURL request discarded the response body to avoid displaying the secret value.
 
-![Key Vault REST API HTTP 200 verification](Screenshots%20Terraform/10-key-vault-http-200.png)
+![Key Vault REST API HTTP 200 verification](screenshots%20Terraform/10-key-vault-http-200.png)
 
 *Terminal output shows `HTTP status: 200` and the success message after the Key Vault secret request. This verifies authenticated access to that endpoint, not connectivity to Azure SQL Database.*
 
 #### Azure PaaS resource inventory
 
-![Azure resource group inventory](Screenshots%20Terraform/11-final-resource-inventory.png)
+![Azure resource group inventory](screenshots%20Terraform/11-final-resource-inventory.png)
 
 *Resource group `rg-lab03-mark` lists Key Vault `kv-lab03-mark`, SQL database `sql-app`, and SQL logical server `sql-server-markk`, all in Central US. The web VM is in the separate `rg-lab02-mark` resource group.*
 
