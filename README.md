@@ -59,59 +59,87 @@ This portfolio separates **resource configuration**, **authorization**, and **su
 
 ### Azure infrastructure and database modernization
 
-The original environment included a self-managed database-tier VM and managed disk. Those resources were subsequently retired as the database tier moved to Azure SQL Database. The earlier captures below show the **former IaaS resources**, not the Azure SQL service.
+This project explores an **IaaS-to-PaaS database modernization approach**: documenting an earlier Linux VM-based database tier and provisioning a managed Azure SQL Database. The original VM and disk belonged to `rg-lab02-mark`, while the new Azure SQL resources were provisioned in `rg-lab03-mark`. The historical captures establish the original configuration, but **do not independently prove deletion of the old resources**.
 
-![Former database-tier virtual machine](screenshots/01-sql-database-overview.png)
+#### Former database-tier infrastructure
 
-*Historical infrastructure: former database-tier virtual machine. This is **not** an Azure SQL Database overview.*
+![Former database-tier Ubuntu VM](Screenshots%20Terraform/01-former-database-vm.png)
 
-![Former database-tier managed disk](screenshots/02-sql-logical-server.png)
+*Historical Azure VM `vm-db-01` in a stopped (deallocated) state, with 4 vCPUs, 16 GiB RAM, and private IP `10.0.2.4`. This is an IaaS VM, not Azure SQL Database.*
 
-*Historical infrastructure: managed disk associated with the former database VM. This is **not** an Azure SQL logical server screenshot.*
+![Former database VM managed disk](Screenshots%20Terraform/02-former-database-disk.png)
 
-The Azure SQL logical server `sql-server-markk` and its database `sql-app` (Online, Basic tier) are documented in the project inventory. A separate, correctly identified SQL logical server capture is being prepared for upload.
+*Historical 30 GiB Premium SSD LRS managed OS disk associated with `vm-db-01`.*
 
-![Azure SQL Database compute and storage configuration](screenshots/05-vm-managed-identity.png)
+#### Azure SQL Database provisioning
 
-*Azure SQL Database compute/storage configuration; this capture does **not** show VM managed identity.*
+I provisioned Azure SQL logical server `sql-server-markk` in **Central US**, with the managed database `sql-app`.
+
+![Azure SQL logical server overview](Screenshots%20Terraform/03-azure-sql-logical-server.png)
+
+*SQL logical server `sql-server-markk` showing Available status and the associated `sql-app` database.*
+
+![Azure SQL Database overview](Screenshots%20Terraform/04-azure-sql-database.png)
+
+*Azure SQL Database `sql-app` showing Online status and the Basic pricing tier.*
+
+![Azure SQL compute and storage configuration](Screenshots%20Terraform/05-azure-sql-compute-storage.png)
+
+*Azure SQL Basic service tier configured for 5 DTUs, a 2 GB maximum database size, and locally redundant backup storage.*
+
+**Engineering takeaway:** Azure SQL Database reduces the operating-system and database-server infrastructure administration associated with a self-managed VM. Database access, networking, and security configuration still require deliberate management.
 
 ### Azure Key Vault and secret management
 
-The project uses `kv-lab03-mark` to hold the enabled `SqlAdminPassword` secret. The secret's value is intentionally excluded.
+To avoid embedding a SQL administrator credential in source code, I deployed Azure Key Vault `kv-lab03-mark` in **Central US** and created an enabled secret named `SqlAdminPassword`.
 
-![Azure Key Vault overview](screenshots/03-key-vault-overview.png)
+![Azure Key Vault resource overview](Screenshots%20Terraform/06-key-vault-overview.png)
 
-*Key Vault resource overview.*
+*Key Vault `kv-lab03-mark` overview, including the vault endpoint and enabled soft delete. Purge protection was disabled in the captured configuration.*
 
-![Azure Key Vault secret inventory](screenshots/04-key-vault-secret-list.png)
+![Azure Key Vault secrets inventory](Screenshots%20Terraform/07-key-vault-secret-list.png)
 
-*Secret list showing configuration, not the credential value.*
+*Secret inventory showing `SqlAdminPassword` successfully created and enabled; the secret value is not displayed.*
+
+**Security takeaway:** Centralized secret storage makes it possible to control credential access through Azure identity and authorization instead of distributing credentials across scripts or application configuration.
 
 ### Managed identity and role-based access control
 
-The retained `vm-web` Ubuntu VM was configured with a system-assigned managed identity, and vault-scoped `Key Vault Secrets User` authorization was configured for that identity. A separate identity-status screenshot is being prepared for upload; the SQL compute screenshot above must not be used as identity evidence.
+I enabled a **system-assigned managed identity** for the existing Ubuntu VM `vm-web`. This allows the VM to request Microsoft Entra tokens without storing a client secret for its own Azure identity.
 
-![Azure Key Vault RBAC configuration](screenshots/06-key-vault-rbac.png)
+![VM system-assigned managed identity](Screenshots%20Terraform/08-vm-managed-identity.png)
 
-*Key Vault RBAC screen. A role-selection or review screen alone does not establish that an assignment was completed; the successful authenticated request below provides additional functional evidence of access.*
+*Azure VM `vm-web` Identity page showing system-assigned identity Status: On and a provisioned principal ID.*
+
+I then assigned the **Key Vault Secrets User** role to the `vm-web` managed identity at the scope of `kv-lab03-mark`.
+
+![Completed Key Vault RBAC role assignment](Screenshots%20Terraform/09-key-vault-rbac-assignment.png)
+
+*Key Vault Access control (IAM) → Role assignments showing `vm-web` as a managed identity with the `Key Vault Secrets User` role at This resource scope. This is a completed assignment listing, not merely the assignment wizard.*
+
+**Security takeaway:** Managed identity plus vault-scoped RBAC enables secret access without a separately stored application credential and limits the identity's Key Vault permissions.
 
 ### API verification and resource inventory
 
-The Key Vault REST request using a token acquired through managed identity returned **HTTP 200**. The response body was suppressed to avoid publishing the secret.
+#### Key Vault REST API verification
 
-![Key Vault REST API HTTP 200](screenshots/07-secret-retrieval-http-200.png)
+From `vm-web`, I tested an authenticated REST request to the `SqlAdminPassword` secret endpoint using a bearer token obtained through managed identity. The cURL request discarded the response body to avoid displaying the secret value.
 
-*Successful API status response; this verifies access to the requested Key Vault endpoint, not a SQL application connection.*
+![Key Vault REST API HTTP 200 verification](Screenshots%20Terraform/10-key-vault-http-200.png)
 
-![Azure resource group inventory](screenshots/08-db-tier-cleanup.png)
+*Terminal output shows `HTTP status: 200` and the success message after the Key Vault secret request. This verifies authenticated access to that endpoint, not connectivity to Azure SQL Database.*
 
-*Azure resource inventory captured during infrastructure review. The image is not, by itself, a before-and-after proof of DB-tier deletion.*
+#### Azure PaaS resource inventory
 
-**Verification boundary:** This project documents Azure SQL provisioning and managed-identity-based Key Vault access. It does not claim an application-to-SQL connection, executed SQL queries, or a deployed application backend.
+![Azure resource group inventory](Screenshots%20Terraform/11-final-resource-inventory.png)
 
-**Evidence maintenance:** Two additional original captures—`sql-server-markk` overview and `vm-web` identity status—are available for upload under descriptive filenames. The older historical filenames are retained temporarily to avoid broken links; the captions above explicitly identify their actual contents.
+*Resource group `rg-lab03-mark` lists Key Vault `kv-lab03-mark`, SQL database `sql-app`, and SQL logical server `sql-server-markk`, all in Central US. The web VM is in the separate `rg-lab02-mark` resource group.*
 
-For technical context, see [implementation](docs/implementation.md), [security and lessons](docs/security-and-lessons.md), and the [evidence guide](docs/evidence-guide.md).
+**Verification boundary:** The evidence demonstrates Azure SQL provisioning, an enabled system-assigned VM identity, a completed vault-scoped RBAC assignment, and successful Key Vault REST API access. It does **not** demonstrate a deployed application backend, application-to-SQL connectivity, executed SQL queries, or independently verified deletion of the former database VM and disk.
+
+**Evidence hygiene:** Review screenshots for subscription IDs, directory IDs, account information, and other sensitive identifiers before publishing. A before-and-after resource inventory or Azure activity log would be needed to document database-tier cleanup conclusively.
+
+For further context, see [implementation](docs/implementation.md), [security and lessons](docs/security-and-lessons.md), and the [evidence guide](docs/evidence-guide.md).
 
 ## Skills demonstrated
 
